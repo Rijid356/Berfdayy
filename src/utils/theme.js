@@ -1,0 +1,26 @@
+export const COLORS = {
+  primary: '#FF6B8A',
+  primaryDark: '#E8456A',
+  primaryLight: '#FFB3C4',
+  primaryFaint: '#FFF0F3',
+  accent: '#FFB347',
+  accentDark: '#E89A2E',
+  background: '#FFFBFC',
+  surface: '#FFFFFF',
+  surfaceAlt: '#FFF5F7',
+  text: '#2D1B20',
+  textSecondary: '#8B6B73',
+  textLight: '#B89AA2',
+  border: '#F5E0E5',
+  success: '#34D399',
+  error: '#EF4444',
+  recording: '#EF4444',
+  white: '#FFFFFF',
+  black: '#000000',
+};
+
+export const SIZES = {
+  xs: 10, sm: 12, md: 14, base: 16, lg: 18, xl: 22, xxl: 28, xxxl: 36,
+  radiusSm: 8, radius: 12, radiusLg: 16, radiusXl: 24, radiusFull: 999,
+  paddingSm: 8, padding: 16, paddingLg: 24, paddingXl: 32,
+};
