@@ -40,6 +40,7 @@
         }
       ],
       "expo-asset",
+      "expo-document-picker",
       [
         "expo-image-picker",
         {
