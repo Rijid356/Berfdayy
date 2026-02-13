@@ -257,17 +257,33 @@ export default function InterviewReviewScreen({ route, navigation }) {
         Alert.alert('Permission Needed', 'Please allow access to save videos to your camera roll.');
         return;
       }
+
+      // Verify the source video still exists on disk
+      if (FileSystem && interview.videoUri) {
+        const fileInfo = await FileSystem.getInfoAsync(interview.videoUri);
+        if (!fileInfo.exists) {
+          Alert.alert('Video Not Found', 'The video file is missing from storage. It may have been deleted.');
+          return;
+        }
+      }
+
       let videoUri = interview.videoUri;
       if (child?.name != null && interview.age != null) {
-        videoUri = await copyVideoWithFriendlyName(interview.videoUri, child.name, interview.age);
+        try {
+          videoUri = await copyVideoWithFriendlyName(interview.videoUri, child.name, interview.age);
+        } catch (copyErr) {
+          // Friendly-name copy failed — fall back to original URI
+          console.warn('Friendly name copy failed, using original:', copyErr);
+          videoUri = interview.videoUri;
+        }
       }
       await MediaLibrary.saveToLibraryAsync(videoUri);
       await cleanupTempShareFiles();
       Alert.alert('Saved!', 'Video saved to your camera roll.');
     } catch (e) {
       console.warn('Save to library error:', e);
-      await cleanupTempShareFiles();
-      Alert.alert('Error', 'Could not save the video.');
+      await cleanupTempShareFiles().catch(() => {});
+      Alert.alert('Error', `Could not save the video.\n\n${e.message || 'Unknown error'}`);
     }
   }
 
@@ -279,15 +295,30 @@ export default function InterviewReviewScreen({ route, navigation }) {
         Alert.alert('Sharing Unavailable', 'Sharing is not available on this device.');
         return;
       }
+
+      // Verify the source video still exists on disk
+      if (FileSystem && interview.videoUri) {
+        const fileInfo = await FileSystem.getInfoAsync(interview.videoUri);
+        if (!fileInfo.exists) {
+          Alert.alert('Video Not Found', 'The video file is missing from storage. It may have been deleted.');
+          return;
+        }
+      }
+
       let videoUri = interview.videoUri;
       if (child?.name != null && interview.age != null) {
-        videoUri = await copyVideoWithFriendlyName(interview.videoUri, child.name, interview.age);
+        try {
+          videoUri = await copyVideoWithFriendlyName(interview.videoUri, child.name, interview.age);
+        } catch (copyErr) {
+          console.warn('Friendly name copy failed, using original:', copyErr);
+          videoUri = interview.videoUri;
+        }
       }
       await Sharing.shareAsync(videoUri, { mimeType: 'video/mp4' });
       await cleanupTempShareFiles();
     } catch (e) {
       console.warn('Share error:', e);
-      await cleanupTempShareFiles();
+      await cleanupTempShareFiles().catch(() => {});
       Alert.alert('Error', 'Could not share the video.');
     }
   }
