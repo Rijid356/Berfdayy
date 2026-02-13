@@ -277,7 +277,9 @@ export default function InterviewReviewScreen({ route, navigation }) {
           videoUri = interview.videoUri;
         }
       }
-      await MediaLibrary.saveToLibraryAsync(videoUri);
+      // Use createAssetAsync instead of saveToLibraryAsync — the latter
+      // tries to insert into the images collection on Android which rejects video/mp4.
+      await MediaLibrary.createAssetAsync(videoUri);
       await cleanupTempShareFiles();
       Alert.alert('Saved!', 'Video saved to your camera roll.');
     } catch (e) {

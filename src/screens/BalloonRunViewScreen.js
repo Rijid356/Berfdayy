@@ -84,7 +84,7 @@ export default function BalloonRunViewScreen({ route, navigation }) {
         Alert.alert('Permission Needed', 'Please grant media library access to save videos.');
         return;
       }
-      await MediaLibrary.saveToLibraryAsync(run.videoUri);
+      await MediaLibrary.createAssetAsync(run.videoUri);
       Alert.alert('Saved', 'Video saved to your camera roll.');
     } catch (e) {
       console.warn('Save to camera roll error:', e);
